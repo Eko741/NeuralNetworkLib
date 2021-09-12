@@ -9,9 +9,16 @@ public:
     
     
     Matrix(int sizeY, int sizeX) {
-        matrix = new double[sizeX * sizeY];
         width = sizeX;
         length = sizeY;
+        size = sizeX * sizeY;
+        matrix = new double[size];
+      
+    }
+
+    ~Matrix() {
+        delete[] matrix;
+        delete this;
     }
     
     double getValueAt(int x, int y) {
@@ -19,7 +26,7 @@ public:
             std::cout << "Out of range. Your array is " << width << " * " << length << "\n";
             exit (3);
         }
-        return *(matrix + length * x + y);
+        return *(matrix + (length*x) + y);
     }
 
     void setValueAt(int x, int y, double a) {
@@ -28,31 +35,46 @@ public:
             exit(3);
         }
 
-        *(matrix + length * x + y) = a;
+        *(matrix + (length*x) + y) = a;
     }
+
+    void transpose() {
+
+    }
+
+    int getLength() {
+        return length;
+    }
+
+    int getWidth() {
+        return width;
+    }
+
+    int getSize() {
+        return size;
+    }
+
+
 private:
     double* matrix;
     int length;
     int width;
+    int  size;
 };
 
 
 class MatrixMaths {
 public:
-    double** matrixMultiplication(double *a, double *b) {
+    Matrix matrixMultiplication(double *a, double *b) {
 
-        return nullptr;
+        //return nullptr;
     }
 
-    void printMatrix(double *a) {
-        int arrSizeY = *(&a + 1) - a;
-        int arrSizeX = *(&a[0] + 1) - a[0];
-        std::cout << arrSizeX << "\n";
-        std::cout << arrSizeY << "\n";
-
-        for (int i = 0; i < arrSizeY;) {
-
+    void printMatrix(Matrix a) {
+        for (int i = 0; i < a.getLength(); i++) {
+            for (int j = 0; j < a.getWidth(); j++) std::cout << a.getValueAt(i, j);
         }
+        std::cout << "\n";
     }
 };
 
@@ -62,8 +84,11 @@ int main() {
     MatrixMaths m = MatrixMaths();
    
     Matrix a = Matrix(2, 2);
-    std::cout << a.getValueAt(1, 1) << "\n";
-    //m.matrixMultiplication(a, a);
+    a.setValueAt(1, 1, 1.01123123123);
+    a.setValueAt(0, 1, 2.2);
+    a.setValueAt(1, 0, 3.2);
+    a.setValueAt(0, 0, 4.2);
+    m.printMatrix(a);
     return 0;
 }
 
