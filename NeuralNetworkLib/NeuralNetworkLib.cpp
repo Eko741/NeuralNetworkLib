@@ -39,7 +39,16 @@ public:
     }
 
     void transpose() {
-
+        double *a = new double[size];
+        for (int i = 0; i < length; i++) 
+            for (int j = 0; j < width; j++) 
+                a[i + j * length] = matrix[i * length + j];
+        int tmp = width;
+        width = length;
+        length = tmp;
+        delete matrix;
+        matrix = a;
+        a = nullptr;
     }
 
     int getLength() {
@@ -72,9 +81,10 @@ public:
 
     void printMatrix(Matrix a) {
         for (int i = 0; i < a.getLength(); i++) {
-            for (int j = 0; j < a.getWidth(); j++) std::cout << a.getValueAt(i, j);
+            for (int j = 0; j < a.getWidth(); j++) std::cout << a.getValueAt(i, j) << " ";
+            std::cout << "\n";
         }
-        std::cout << "\n";
+        
     }
 };
 
@@ -88,6 +98,8 @@ int main() {
     a.setValueAt(0, 1, 2.2);
     a.setValueAt(1, 0, 3.2);
     a.setValueAt(0, 0, 4.2);
+    m.printMatrix(a);
+    a.transpose();
     m.printMatrix(a);
     return 0;
 }
