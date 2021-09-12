@@ -4,12 +4,37 @@
 #include <iostream>
 #include <chrono>;
 
-class Matrix{
+class Matrix {
 public:
+    
+    
     Matrix(int sizeY, int sizeX) {
-
+        matrix = new double[sizeX * sizeY];
+        width = sizeX;
+        length = sizeY;
     }
-}
+    
+    double getValueAt(int x, int y) {
+        if (x >= width || x < 0 || y < 0 || y >= length ) {
+            std::cout << "Out of range. Your array is " << width << " * " << length << "\n";
+            exit (3);
+        }
+        return *(matrix + length * x + y);
+    }
+
+    void setValueAt(int x, int y, double a) {
+        if (x >= width || x < 0 || y < 0 || y >= length) {
+            std::cout << "Out of range. Your array is " << width << " * " << length << "\n";
+            exit(3);
+        }
+
+        *(matrix + length * x + y) = a;
+    }
+private:
+    double* matrix;
+    int length;
+    int width;
+};
 
 
 class MatrixMaths {
@@ -35,8 +60,9 @@ int main() {
     
 
     MatrixMaths m = MatrixMaths();
-    std::cout << a[1][0] << "\n";
-    m.printMatrix(a);
+   
+    Matrix a = Matrix(2, 2);
+    std::cout << a.getValueAt(1, 1) << "\n";
     //m.matrixMultiplication(a, a);
     return 0;
 }
