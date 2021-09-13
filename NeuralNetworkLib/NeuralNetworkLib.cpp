@@ -51,6 +51,15 @@ public:
         a = nullptr;
     }
 
+    void print() {
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < width; j++) std::cout << getValueAt(i, j) << " ";
+            std::cout << "\n";
+        }
+
+    }
+    
+
     int getLength() {
         return length;
     }
@@ -78,14 +87,6 @@ public:
 
         //return nullptr;
     }
-
-    void printMatrix(Matrix a) {
-        for (int i = 0; i < a.getLength(); i++) {
-            for (int j = 0; j < a.getWidth(); j++) std::cout << a.getValueAt(i, j) << " ";
-            std::cout << "\n";
-        }
-        
-    }
 };
 
 int main() {
@@ -98,9 +99,9 @@ int main() {
     a.setValueAt(0, 1, 2.2);
     a.setValueAt(1, 0, 3.2);
     a.setValueAt(0, 0, 4.2);
-    m.printMatrix(a);
+    a.print();
     a.transpose();
-    m.printMatrix(a);
+    a.print();
     return 0;
 }
 
