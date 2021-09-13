@@ -5,6 +5,12 @@
 #include <chrono>;
 
 class Matrix {
+private:
+    double* matrix;
+    int length;
+    int width;
+    int  size;
+
 public:
     
     
@@ -18,31 +24,57 @@ public:
 
     ~Matrix() {
         delete[] matrix;
-        delete this;
     }
     
-    double getValueAt(int x, int y) {
+    double getValueAt(int y, int x) {
         if (x >= width || x < 0 || y < 0 || y >= length ) {
-            std::cout << "Out of range. Your array is " << width << " * " << length << "\n";
+            std::cout << "getValueAt: Out of range. Your matrix is " << width << " * " << length << "\n";
             exit (3);
         }
-        return *(matrix + (length*x) + y);
+        return *(matrix + x + y * width);
     }
 
-    void setValueAt(int x, int y, double a) {
+    double* getRow(int row) {
+        if (row >= length || row < 0){
+            std::cout << "getRow: Out of range. Your matrix is " << width << " * " << length << "\n";
+            exit(3);
+        }
+        double* a = new double[width];
+        for (int i = 0; i < width; i++) {
+            a[i] = matrix[i + row * width];
+         }
+        return a;
+    }
+
+    double* getColumn(int column) {
+        if (column >= width || column < 0) {
+            std::cout << "getRow: Out of range. Your matrix is " << width << " * " << length << "\n";
+            exit(3);
+        }
+        double* a = new double[width];
+        for (int i = 0; i < width; i++) {
+            a[i] = matrix[i * width + column];
+        }
+        return a;
+    }
+
+
+    void setValueAt(int y, int x, double a) {
         if (x >= width || x < 0 || y < 0 || y >= length) {
-            std::cout << "Out of range. Your array is " << width << " * " << length << "\n";
+            std::cout << "setValueAt: Out of range. Your matrix is " << width << " * " << length << "\n";
             exit(3);
         }
 
-        *(matrix + (length*x) + y) = a;
+        *(matrix + x + y * width) = a;
     }
+
+
 
     void transpose() {
         double *a = new double[size];
-        for (int i = 0; i < length; i++) 
-            for (int j = 0; j < width; j++) 
-                a[i + j * length] = matrix[i * length + j];
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < length; j++)
+                a[i + j * width] = matrix[i * length + j];
         int tmp = width;
         width = length;
         length = tmp;
@@ -71,37 +103,56 @@ public:
     int getSize() {
         return size;
     }
-
-
-private:
-    double* matrix;
-    int length;
-    int width;
-    int  size;
 };
 
 
 class MatrixMaths {
 public:
-    Matrix matrixMultiplication(double *a, double *b) {
+    Matrix* matrixMultiplication(Matrix *a, Matrix *b) {
+        if ((a->getWidth() - b->getLength())) {
+            std::cout << "MatrixMultiplication: Matrises don't match. Matrix a is " << a->getLength() << " * " << a->getWidth() << ", matrix b is " << b->getLength() << " * " << b->getWidth() << "\n";
+            exit(3);
+        }
+        Matrix *c = new Matrix(a->getLength(), b->getWidth());
+        for (int i = 0; i < c->getLength(); i++) {
+            for (int j = 0; j < c->getWidth(); j++) {
+                c->setValueAt(i, j, dotProduct(a->getRow(i), b->getColumn(j), a->getWidth()));
+            }
+        }
+        return c;
+    }
 
-        //return nullptr;
+    double dotProduct(double a[], double b[], int size) {
+        double sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum += a[i] * b[i];
+        }
+        return sum;
     }
 };
+
+ 
 
 int main() {
     
 
     MatrixMaths m = MatrixMaths();
    
-    Matrix a = Matrix(2, 2);
-    a.setValueAt(1, 1, 1.01123123123);
-    a.setValueAt(0, 1, 2.2);
-    a.setValueAt(1, 0, 3.2);
-    a.setValueAt(0, 0, 4.2);
-    a.print();
-    a.transpose();
-    a.print();
+    Matrix *a = new  Matrix(4, 4);
+    Matrix* b = new Matrix(4, 4);
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            b->setValueAt(i, j, i + j * i);
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            a->setValueAt(i, j, i + j * i);
+
+    Matrix* c = m.matrixMultiplication(a, b);
+    a->print();
+    b->print();
+    c->print();
+    
+    
     return 0;
 }
 
