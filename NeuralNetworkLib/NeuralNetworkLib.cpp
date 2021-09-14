@@ -51,8 +51,8 @@ public:
             std::cout << "getRow: Out of range. Your matrix is " << width << " * " << length << "\n";
             exit(3);
         }
-        double* a = new double[width];
-        for (int i = 0; i < width; i++) {
+        double* a = new double[length];
+        for (int i = 0; i < length; i++) {
             a[i] = matrix[i * width + column];
         }
         return a;
@@ -61,7 +61,7 @@ public:
 
     void setValueAt(int y, int x, double a) {
         if (x >= width || x < 0 || y < 0 || y >= length) {
-            std::cout << "setValueAt: Out of range. Your matrix is " << width << " * " << length << "\n";
+            std::cout << "setValueAt: Out of range. Your matrix is " << length << " * " << width << "\n";
             exit(3);
         }
 
@@ -109,7 +109,7 @@ public:
 class MatrixMaths {
 public:
     Matrix* matrixMultiplication(Matrix *a, Matrix *b) {
-        if ((a->getWidth() - b->getLength())) {
+        if ((a->getWidth() != b->getLength())) {
             std::cout << "MatrixMultiplication: Matrises don't match. Matrix a is " << a->getLength() << " * " << a->getWidth() << ", matrix b is " << b->getLength() << " * " << b->getWidth() << "\n";
             exit(3);
         }
@@ -122,12 +122,31 @@ public:
         return c;
     }
 
-    double dotProduct(double a[], double b[], int size) {
+    double dotProduct(double *a, double *b, int size) {
         double sum = 0;
         for (int i = 0; i < size; i++) {
             sum += a[i] * b[i];
         }
         return sum;
+    }
+
+    void addRowVector(Matrix *a, Matrix *b) {
+        if (a->getWidth() != b->getWidth()) {
+            std::cout << "AddRowVector: Matrix and vector don't match. Matrix is " << a->getLength() << " * " << a->getWidth() << ", vector is " << b->getWidth() << " long" << "\n";
+            exit(3);
+        }
+
+        if (b->getLength() != 1) {
+            std::cout << "AddRowVector: b is not a vector" "\n";
+            exit(3);
+        }
+
+        for (int i = 0; i < a->getLength(); i++) {
+            for (int j = 0; j < b->getWidth(); j++) {
+                a->setValueAt(i, j, a->getValueAt(i, j) + b->getValueAt(0, j));
+            }
+        }
+
     }
 };
 
@@ -138,19 +157,28 @@ int main() {
 
     MatrixMaths m = MatrixMaths();
    
-    Matrix *a = new  Matrix(4, 4);
-    Matrix* b = new Matrix(4, 4);
+    Matrix* a = new  Matrix(4, 6);
+    Matrix* b = new Matrix(6, 2);
     for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            b->setValueAt(i, j, i + j * i);
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < 6; j++)
             a->setValueAt(i, j, i + j * i);
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 2; j++)
+            b->setValueAt(i, j, i + j * i);
 
+    
+
+    Matrix* d = new Matrix(1, 2);
+    d->setValueAt(0, 0, 1);
+    d->setValueAt(0, 1, 4);
+    std::cout << sizeof(d) << "\n";
+    //std::cout << *(&d + 1) - d << "\n";
     Matrix* c = m.matrixMultiplication(a, b);
-    a->print();
-    b->print();
     c->print();
+    std::cout << "\n";
+    m.addRowVector(c, d);
+    c->print();
+    std::cout << "\n";
     
     
     return 0;
