@@ -2,7 +2,17 @@
 //
 
 #include <iostream>
-#include <chrono>;
+
+static class ActivationFunctions {
+public:
+    static void ReLU(double *a ) {
+        *a = (*a < 0) ? 0 : *a;
+    }
+
+    static void GeLU(double *a) {
+    
+    }
+};
 
 class Matrix {
 private:
@@ -25,7 +35,13 @@ public:
     ~Matrix() {
         delete[] matrix;
     }
-    
+    void activationFunction(void AF(double*)) {
+        void (*fcn)(double*){ AF };
+        for (int i = 0; i < size; i++) {
+            fcn(&matrix[i]);
+        }
+    }
+
     double getValueAt(int y, int x) {
         if (x >= width || x < 0 || y < 0 || y >= length ) {
             std::cout << "getValueAt: Out of range. Your matrix is " << width << " * " << length << "\n";
@@ -164,22 +180,24 @@ int main() {
             a->setValueAt(i, j, i + j * i);
     for (int i = 0; i < 6; i++)
         for (int j = 0; j < 2; j++)
-            b->setValueAt(i, j, i + j * i);
+            b->setValueAt(i, j, -(i + j * i));
 
     
 
     Matrix* d = new Matrix(1, 2);
-    d->setValueAt(0, 0, 1);
-    d->setValueAt(0, 1, 4);
-    std::cout << sizeof(d) << "\n";
-    //std::cout << *(&d + 1) - d << "\n";
+    d->setValueAt(0, 0, 140);
+    d->setValueAt(0, 1, 200);
+    a->print();
+    b->print();
+
     Matrix* c = m.matrixMultiplication(a, b);
     c->print();
     std::cout << "\n";
     m.addRowVector(c, d);
     c->print();
+    c->activationFunction(&ActivationFunctions::ReLU);
     std::cout << "\n";
-    
+    c->print();
     
     return 0;
 }
