@@ -1,0 +1,105 @@
+class Matrix {
+private:
+    double* matrix;
+    int length;
+    int width;
+    int  size;
+
+public:
+    
+    
+    Matrix(int sizeY, int sizeX) {
+        width = sizeX;
+        length = sizeY;
+        size = sizeX * sizeY;
+        matrix = new double[size];
+      
+    }
+
+    ~Matrix() {
+        delete[] matrix;
+    }
+    void activationFunction(void AF(double*)) {
+        void (*fcn)(double*){ AF };
+        for (int i = 0; i < size; i++) {
+            fcn(&matrix[i]);
+        }
+    }
+
+    double getValueAt(int y, int x) {
+        if (x >= width || x < 0 || y < 0 || y >= length ) {
+            std::cout << "getValueAt: Out of range. Your matrix is " << width << " * " << length << "\n";
+            exit (3);
+        }
+        return *(matrix + x + y * width);
+    }
+
+    double* getRow(int row) {
+        if (row >= length || row < 0){
+            std::cout << "getRow: Out of range. Your matrix is " << width << " * " << length << "\n";
+            exit(3);
+        }
+        double* a = new double[width];
+        for (int i = 0; i < width; i++) {
+            a[i] = matrix[i + row * width];
+         }
+        return a;
+    }
+
+    double* getColumn(int column) {
+        if (column >= width || column < 0) {
+            std::cout << "getRow: Out of range. Your matrix is " << width << " * " << length << "\n";
+            exit(3);
+        }
+        double* a = new double[length];
+        for (int i = 0; i < length; i++) {
+            a[i] = matrix[i * width + column];
+        }
+        return a;
+    }
+
+
+    void setValueAt(int y, int x, double a) {
+        if (x >= width || x < 0 || y < 0 || y >= length) {
+            std::cout << "setValueAt: Out of range. Your matrix is " << length << " * " << width << "\n";
+            exit(3);
+        }
+
+        *(matrix + x + y * width) = a;
+    }
+
+
+
+    void transpose() {
+        double *a = new double[size];
+        for (int i = 0; i < width; i++)
+            for (int j = 0; j < length; j++)
+                a[i + j * width] = matrix[i * length + j];
+        int tmp = width;
+        width = length;
+        length = tmp;
+        delete matrix;
+        matrix = a;
+    }
+
+    void print() {
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < width; j++) std::cout << getValueAt(i, j) << " ";
+            std::cout << "\n";
+        }
+
+    }
+    
+
+    int getLength() {
+        return length;
+    }
+
+    int getWidth() {
+        return width;
+    }
+
+    int getSize() {
+        return size;
+    }
+};

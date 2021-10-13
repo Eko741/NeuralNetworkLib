@@ -140,6 +140,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="NeuralNetworkLib.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="MatrixMaths.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MatrixMaths.h" />
+    <ClInclude Include="Matrix.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="OldMatrixClassDefintion.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
